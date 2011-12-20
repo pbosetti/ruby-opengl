@@ -1,6 +1,20 @@
 ruby-opengl
 ===========
 
+Foreword (December 20, 2011)
+--------
+This is a modernization of the glorious but unmaintained ruby-opengl version, aimed at making it compatible with ruby 1.9.x series. At the moment, it successfully compiles on OS X Lion and Debian 6.0.3.
+
+Official ruby-opengl2 page is on [GitHub](https://github.com/pbosetti/ruby-opengl). The library is also available as a gem:
+
+    $ gem install ruby-opengl2
+    
+To stay backward-compatible with the old gem, you stiil have to `require "ruby-opengl"`.
+
+Many thanks to the original authors.
+
+Original comments
+-----------------
 [ruby-opengl][] consists of Ruby extension modules that are bindings for
 the [OpenGL][], GLU, and [GLUT][] libraries. It is intended to be a
 replacement for -- and uses the code from -- [Yoshi's ruby-opengl][].
