@@ -72,6 +72,19 @@ spec = Gem::Specification.new do |s|
     s.has_rdoc          = false
     s.files             = FileList["{lib,ext,examples,test}/**/*"]
     s.extensions        = ['Rakefile']
+    
+    if s.respond_to? :specification_version then
+      current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
+      s.specification_version = 3
+
+      if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
+        s.add_runtime_dependency(%q<mkrf>, [">= 0.2.3"])
+      else
+        s.add_dependency(%q<mkrf>, [">= 0.2.3"])
+      end
+    else
+      s.add_dependency(%q<mkrf>, [">= 0.2.3"])
+    end
 end
 
 # Create a task for creating a ruby source gem
