@@ -310,7 +310,7 @@ VALUE obj;
 	
 	switch (rb_scan_args(argc, argv, "52", &args[0], &args[1], &args[2], &args[3], &args[4], &args[5], &args[6])) {
 		case 5:
-			uknot_count = RARRAY_LEN(args[1]);
+			uknot_count = (GLint)RARRAY_LEN(args[1]);
 			uorder = (GLenum)NUM2INT(args[3]);
 			type = (GLenum)NUM2INT(args[4]);
 			u_stride = get_curve_dim(type);
@@ -401,11 +401,11 @@ VALUE obj;
 	
 	switch (rb_scan_args(argc, argv, "74", &args[0], &args[1], &args[2], &args[3], &args[4], &args[5], &args[6], &args[7], &args[8], &args[9], &args[10])) {
 		case 7:
-			sknot_count = RARRAY_LEN(args[1]);
+			sknot_count = (GLint)RARRAY_LEN(args[1]);
 			sknot = ALLOC_N(GLfloat, sknot_count);
 			ary2cflt(args[1], sknot, sknot_count);
 
-			tknot_count = RARRAY_LEN(args[2]);
+			tknot_count = (GLint)RARRAY_LEN(args[2]);
 			tknot = ALLOC_N(GLfloat, tknot_count);
 			ary2cflt(args[2], tknot, tknot_count);
 
@@ -497,8 +497,8 @@ VALUE obj;
 	
 	switch (rb_scan_args(argc, argv, "32", &args[0], &args[1], &args[2], &args[3], &args[4])) {
 		case 3:
-			count = RARRAY_LEN(args[1]);
-			type = NUM2INT(args[2]);
+			count = (GLint)RARRAY_LEN(args[1]);
+			type = (GLenum)NUM2INT(args[2]);
 			stride = (type == GLU_MAP1_TRIM_2 ? 2 : 3);
 
 			array = ALLOC_N(GLfloat, count*stride);
@@ -506,9 +506,9 @@ VALUE obj;
 			ary2cflt(ary_ctl1, array, count*stride);
 			break;
 		case 5:
-			count = NUM2INT(args[1]);
-			stride = NUM2INT(args[3]);
-			type = NUM2INT(args[4]);
+			count = (GLint)NUM2INT(args[1]);
+			stride = (GLint)NUM2INT(args[3]);
+			type = (GLint)NUM2INT(args[4]);
 
 			array = ALLOC_N(GLfloat, count*stride);
 			ary_ctl1 = rb_funcall(args[2],rb_intern("flatten"),0);

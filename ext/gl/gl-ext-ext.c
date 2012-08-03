@@ -41,7 +41,7 @@ VALUE obj,arg1,arg2;
 	LOAD_GL_FUNC(glPrioritizeTexturesEXT,"GL_EXT_texture_object")
 	Check_Type(arg1,T_ARRAY);
 	Check_Type(arg2,T_ARRAY);
-	if ((size = RARRAY_LEN(arg1)) != RARRAY_LEN(arg2))
+	if ((size = (GLsizei)RARRAY_LEN(arg1)) != (GLsizei)RARRAY_LEN(arg2))
 		rb_raise(rb_eArgError, "passed arrays must have the same length");
 	textures = ALLOC_N(GLuint,size);
 	priorities = ALLOC_N(GLclampf,size);
@@ -68,7 +68,7 @@ VALUE obj,arg1;
 	int i;
 	LOAD_GL_FUNC(glAreTexturesResidentEXT,"GL_EXT_texture_object")
 	ary = rb_Array(arg1);
-	size = RARRAY_LEN(ary);
+	size = (GLsizei)RARRAY_LEN(ary);
 	textures = ALLOC_N(GLuint,size);
 	residences = ALLOC_N(GLboolean,size);
 	ary2cuint(ary,textures,size);	
@@ -102,7 +102,7 @@ static VALUE gl_PointParameterfvEXT(VALUE obj,VALUE arg1,VALUE arg2)
 	GLenum pname;
 	GLint size;
 	LOAD_GL_FUNC(glPointParameterfvEXT,"GL_EXT_point_parameters")
-	pname = NUM2UINT(arg1);
+	pname = (GLenum)NUM2UINT(arg1);
 	Check_Type(arg2,T_ARRAY);
 	if (pname==GL_POINT_DISTANCE_ATTENUATION)
 		size = 3;
@@ -215,7 +215,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLenum mode;
 	GLint *ary1;
 	GLsizei *ary2;
-  int len1,len2;
+  long len1,len2;
 	LOAD_GL_FUNC(glMultiDrawArraysEXT,"GL_EXT_multi_draw_arrays")
   len1 = RARRAY_LEN(arg2);
   len2 = RARRAY_LEN(arg3);
@@ -226,7 +226,7 @@ VALUE obj,arg1,arg2,arg3;
 	ary2 = ALLOC_N(GLsizei,len2);
 	ary2cint(arg2,ary1,len1);
 	ary2cint(arg3,ary2,len2);
-	fptr_glMultiDrawArraysEXT(mode,ary1,ary2,len1);
+	fptr_glMultiDrawArraysEXT(mode,ary1,ary2,(GLsizei)len1);
 	xfree(ary1);
 	xfree(ary2);
 	CHECK_GLERROR
@@ -257,7 +257,7 @@ VALUE obj;
 			type = (GLenum)NUM2INT(args[1]);
 			Check_Type(args[2],T_ARRAY);
 			ary = args[2];
-			size = RARRAY_LEN(ary);
+			size = (GLint)RARRAY_LEN(ary);
 			counts = ALLOC_N(GLsizei,size);
 			indices = ALLOC_N(GLvoid*,size);
 			for (i=0;i<size;i++) {
@@ -265,7 +265,7 @@ VALUE obj;
 				data = pack_array_or_pass_string(type,RARRAY_PTR(ary)[i]);
 
 				indices[i] = RSTRING_PTR(data);
-				counts[i] = RSTRING_LEN(data);
+				counts[i] = (GLsizei)RSTRING_LEN(data);
 			}
 			fptr_glMultiDrawElementsEXT(mode,counts,type,indices,size);
 			xfree(counts);
@@ -281,12 +281,12 @@ VALUE obj;
 			if (RARRAY_LEN(args[2]) != RARRAY_LEN(args[3]))
 				rb_raise(rb_eArgError, "Count and indices offset array must have same length");
 
-			size = RARRAY_LEN(args[2]);
+			size = (GLint)RARRAY_LEN(args[2]);
 
 			counts = ALLOC_N(GLsizei,size);
 			indices = ALLOC_N(GLvoid*,size);
 			for (i=0;i<size;i++) {
-				counts[i] = NUM2INT(rb_ary_entry(args[2],i));
+				counts[i] = (GLsizei)NUM2INT(rb_ary_entry(args[2],i));
 				indices[i] = (GLvoid *) NUM2INT(rb_ary_entry(args[3],i));
 			}
 			fptr_glMultiDrawElementsEXT(mode,counts,type,indices,size);
@@ -367,7 +367,7 @@ static VALUE gl_GetRenderbufferParameterivEXT(VALUE obj,VALUE arg1,VALUE arg2)
 {
 	GLint param = 0;
 	LOAD_GL_FUNC(glGetRenderbufferParameterivEXT,"GL_EXT_framebuffer_object")
-	fptr_glGetRenderbufferParameterivEXT(NUM2UINT(arg1),NUM2UINT(arg2),&param);
+	fptr_glGetRenderbufferParameterivEXT((GLenum)NUM2UINT(arg1),(GLenum)NUM2UINT(arg2),&param);
 	CHECK_GLERROR
 	return INT2NUM(param);
 }
@@ -388,9 +388,9 @@ static VALUE gl_GetFramebufferAttachmentParameterivEXT(VALUE obj,VALUE arg1, VAL
 {
 	GLint ret = 0;
 	LOAD_GL_FUNC(glGetFramebufferAttachmentParameterivEXT,"GL_EXT_framebuffer_object")
-	fptr_glGetFramebufferAttachmentParameterivEXT(NUM2UINT(arg1),NUM2UINT(arg2),NUM2UINT(arg3),&ret);
+	fptr_glGetFramebufferAttachmentParameterivEXT((GLenum)NUM2UINT(arg1),(GLenum)NUM2UINT(arg2),(GLenum)NUM2UINT(arg3),&ret);
 	CHECK_GLERROR
-	return cond_GLBOOL2RUBY(NUM2UINT(arg3),ret);
+	return cond_GLBOOL2RUBY((GLenum)NUM2UINT(arg3),ret);
 }
 
 GL_FUNC_LOAD_1(GenerateMipmapEXT,GLvoid, GLenum, "GL_EXT_framebuffer_object")
@@ -412,9 +412,9 @@ static VALUE gl_##_name_(VALUE obj,VALUE arg1,VALUE arg2) \
 { \
 	_type_ ret = 0; \
 	LOAD_GL_FUNC(gl##_name_,"GL_EXT_timer_query") \
-	fptr_gl##_name_(NUM2INT(arg1),NUM2INT(arg2),&ret); \
+	fptr_gl##_name_((GLuint)NUM2INT(arg1),(GLenum)NUM2INT(arg2),&ret); \
 	CHECK_GLERROR \
-	return _conv_(NUM2INT(arg2),ret); \
+	return _conv_((GLenum)NUM2INT(arg2),ret); \
 }
 
 GETQUERY_FUNC(GetQueryObjecti64vEXT,GLint64EXT,cond_GLBOOL2RUBY_LL)
@@ -430,14 +430,14 @@ gl_##_name_(obj,arg1,arg2,arg3) \
 VALUE obj,arg1,arg2,arg3; \
 { \
 	_type_ *cary; \
-	int len; \
+	long len; \
 	LOAD_GL_FUNC(gl##_name_,_extension_) \
 	len = RARRAY_LEN(rb_Array(arg3)); \
 	if (len<=0 || (len % 4) != 0) \
 		rb_raise(rb_eArgError, "Parameter array size must be multiplication of 4"); \
 	cary = ALLOC_N(_type_,len); \
 	_conv_(arg3,cary,len); \
-	fptr_gl##_name_(NUM2UINT(arg1),NUM2UINT(arg2),len / 4, cary); \
+	fptr_gl##_name_((GLenum)NUM2UINT(arg1),(GLuint)NUM2UINT(arg2),len / 4, cary); \
 	xfree(cary); \
 	CHECK_GLERROR \
 	return Qnil; \
@@ -469,7 +469,7 @@ VALUE obj,arg1,arg2; \
 	_type_ value[_size_]; \
 	LOAD_GL_FUNC(gl##_name_,"GL_ARB_shader_objects") \
 	_conv_(arg2,value,_size_); \
-	fptr_gl##_name_(NUM2UINT(arg1),value); \
+	fptr_gl##_name_((GLuint)NUM2UINT(arg1),value); \
 	CHECK_GLERROR \
 	return Qnil; \
 }
@@ -563,7 +563,7 @@ VALUE obj,arg1,arg2; \
 	_type_ *value; \
 	LOAD_GL_FUNC(gl##_name_,"GL_EXT_gpu_shader4") \
 	Check_Type(arg2,T_ARRAY); \
-	count = RARRAY_LEN(arg2); \
+	count = (GLsizei)RARRAY_LEN(arg2); \
 	if (count<=0 || (count % _size_) != 0) \
 		rb_raise(rb_eArgError, "Parameter array size must be multiplication of %i",_size_); \
 	location = (GLint)NUM2INT(arg1); \
@@ -620,7 +620,7 @@ static VALUE gl_BindFragDataLocationEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE ar
 {
 	LOAD_GL_FUNC(glBindFragDataLocationEXT,"GL_EXT_gpu_shader4")
 	Check_Type(arg3,T_STRING);
-	fptr_glBindFragDataLocationEXT(NUM2UINT(arg1),NUM2UINT(arg2),RSTRING_PTR(arg3));
+	fptr_glBindFragDataLocationEXT((GLuint)NUM2UINT(arg1),(GLuint)NUM2UINT(arg2),RSTRING_PTR(arg3));
 	CHECK_GLERROR
 	return Qnil;
 }
@@ -631,7 +631,7 @@ static VALUE gl_GetFragDataLocationEXT(VALUE obj,VALUE arg1,VALUE arg2)
 	GLint ret;
 	LOAD_GL_FUNC(glGetFragDataLocationEXT,"GL_EXT_gpu_shader4")
 	Check_Type(arg2,T_STRING);
-	ret = fptr_glGetFragDataLocationEXT(NUM2UINT(arg1),RSTRING_PTR(arg2));
+	ret = fptr_glGetFragDataLocationEXT((GLuint)NUM2UINT(arg1),RSTRING_PTR(arg2));
 	CHECK_GLERROR
 	return INT2NUM(ret);
 }

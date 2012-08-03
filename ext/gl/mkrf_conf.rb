@@ -20,6 +20,10 @@ require 'rbconfig'
 RUBYVER = " -DRUBY_VERSION=" + RUBY_VERSION.split(".").join
 
 Mkrf::Generator.new( 'gl' ) do |g|
+  puts "*" * 10
+  #Config::CONFIG["CC"] = `which gcc`.chomp
+  p Config::CONFIG
+  puts "*" * 10
 	case RUBY_PLATFORM
 	when /darwin/
 		g.cflags << RUBYVER

@@ -235,7 +235,7 @@ VALUE obj,arg1,arg2;
 	VALUE lists;
 	type = CONV_GLenum(arg1);
 	lists = pack_array_or_pass_string(type,arg2);
-	n = RSTRING_LEN(lists) / gltype_glformat_unit_size(type,1);
+	n = (GLsizei)RSTRING_LEN(lists) / gltype_glformat_unit_size(type,1);
 	glCallLists(n, type, RSTRING_PTR(lists));
 	CHECK_GLERROR
 	return Qnil;
@@ -902,7 +902,7 @@ VALUE obj; \
 				rb_raise(rb_eArgError, "Pixel unpack buffer bound, but offset argument missing"); \
 			map = (GLenum)NUM2INT(args[0]); \
 			Check_Type(args[1],T_ARRAY); \
-			size = RARRAY_LEN(args[1]); \
+			size = (GLsizei)RARRAY_LEN(args[1]); \
 			values = ALLOC_N(_vartype_,size); \
 			_convert_(args[1],values,size); \
 			glPixelMap##_type_##v(map,size,values); \
@@ -946,8 +946,8 @@ VALUE obj;
 	y = (GLint)NUM2INT(args[1]);
 	width = (GLsizei)NUM2UINT(args[2]);
 	height = (GLsizei)NUM2UINT(args[3]);
-	format = NUM2INT(args[4]);
-	type = NUM2INT(args[5]);
+	format = (int)NUM2INT(args[4]);
+	type = (int)NUM2INT(args[5]);
 
 	switch(numargs) {
 		default:
@@ -1026,7 +1026,7 @@ VALUE obj,arg1; \
 	VALUE ary, ary2; \
 	int i,j; \
 	_type_ items[64];  \
-	pname = NUM2INT(arg1); \
+	pname = (GLenum)NUM2INT(arg1); \
 	switch(pname) { \
 	case GL_ACCUM_CLEAR_VALUE: \
 	case GL_BLEND_COLOR: \
@@ -1985,7 +1985,7 @@ VALUE obj,arg1;
 	VALUE ary;
 	int i;
 	ary = rb_Array(arg1);
-	size = RARRAY_LEN(ary);
+	size = (GLsizei)RARRAY_LEN(ary);
 	textures = ALLOC_N(GLuint,size);
 	residences = ALLOC_N(GLboolean,size);
 	ary2cuint(ary,textures,size);	
@@ -2016,7 +2016,7 @@ VALUE obj,arg1,arg2;
 	GLsizei size;
 	Check_Type(arg1,T_ARRAY);
 	Check_Type(arg2,T_ARRAY);
-	if ((size = RARRAY_LEN(arg1)) != RARRAY_LEN(arg2))
+	if ((size = (GLsizei)RARRAY_LEN(arg1)) != RARRAY_LEN(arg2))
 		rb_raise(rb_eArgError, "passed arrays must have the same length");
 	textures = ALLOC_N(GLuint,size);
 	priorities = ALLOC_N(GLclampf,size);

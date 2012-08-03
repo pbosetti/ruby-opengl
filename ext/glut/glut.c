@@ -22,7 +22,7 @@
 
 #include "../common/common.h"
 
-static int callId; /* 'call' method id */
+static unsigned long callId; /* 'call' method id */
 
 /*
   macros for registering callbacks -
@@ -90,7 +90,7 @@ static VALUE glut_Init( int argc, VALUE * argv, VALUE obj)
 	/* converts commandline parameters from ruby to C, passes them
 	to glutInit and returns the parameters stripped of glut-specific
 	commands ("-display","-geometry" etc.) */
-	largc = RARRAY_LEN(orig_arg);
+	largc = (int)RARRAY_LEN(orig_arg);
 	largv = ALLOCA_N(char*, largc);
 	for (i = 0; i < largc; i++)
 		largv[i] = StringValuePtr(RARRAY_PTR(orig_arg)[i]);
@@ -130,8 +130,8 @@ glut_InitWindowPosition(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
 {
 	int x,y;
-	x = NUM2INT(arg1);
-	y = NUM2INT(arg2);
+	x = (int)NUM2INT(arg1);
+	y = (int)NUM2INT(arg2);
 	glutInitWindowPosition(x,y);
 	return Qnil;
 }
@@ -142,8 +142,8 @@ glut_InitWindowSize(obj, arg1, arg2)
 VALUE obj,arg1,arg2;
 {
 	int width,height;
-	width = NUM2INT(arg1);
-	height = NUM2INT(arg2);
+	width = (int)NUM2INT(arg1);
+	height = (int)NUM2INT(arg2);
 	glutInitWindowSize(width,height);
 	return Qnil;
 }
@@ -203,7 +203,7 @@ VALUE obj,arg1,arg2;
 	int pollinterval;
 	if (!rb_obj_is_kind_of(arg1,rb_cProc) && !NIL_P(arg1))
 		rb_raise(rb_eTypeError, "glutJoystickFunc:%s", rb_class2name(CLASS_OF(arg1)));
-	pollinterval=NUM2INT(arg2);
+	pollinterval=(int)NUM2INT(arg2);
 	win = glutGetWindow();
 	if (win == 0)
 		rb_raise(rb_eRuntimeError, "glutJoystickFunc needs current window");
@@ -238,11 +238,11 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 {
 	int win, x, y, width, height;
 	int ret;
-	win = NUM2INT(arg1);
-	x = NUM2INT(arg2);
-	y = NUM2INT(arg3);
-	width = NUM2INT(arg4);
-	height = NUM2INT(arg5);
+	win =    (int)NUM2INT(arg1);
+	x =      (int)NUM2INT(arg2);
+	y =      (int)NUM2INT(arg3);
+	width =  (int)NUM2INT(arg4);
+	height = (int)NUM2INT(arg5);
 	ret = glutCreateSubWindow(win, x, y, width, height);
 	return INT2NUM(ret);
 }
@@ -252,7 +252,7 @@ glut_DestroyWindow(obj,arg1)
 VALUE obj,arg1;
 {
 	int win;
-	win = NUM2INT(arg1);
+	win = (int)NUM2INT(arg1);
 	glutDestroyWindow(win);
 	return Qnil;
 }
@@ -276,7 +276,7 @@ glut_SetWindow(obj,arg1)
 VALUE obj,arg1;
 {
 	int win;
-	win = NUM2INT(arg1);
+	win = (int)NUM2INT(arg1);
 	glutSetWindow(win);
 	return Qnil;
 }
@@ -307,8 +307,8 @@ glut_PositionWindow(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
 {
 	int x,y;
-	x = NUM2INT(arg1);
-	y = NUM2INT(arg2);
+	x = (int)NUM2INT(arg1);
+	y = (int)NUM2INT(arg2);
 	glutPositionWindow(x,y);
 	return Qnil;
 }
@@ -319,8 +319,8 @@ glut_ReshapeWindow(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
 {
 	int width,height;
-	width = NUM2INT(arg1);
-	height = NUM2INT(arg2);
+	width =  (int)NUM2INT(arg1);
+	height = (int)NUM2INT(arg2);
 	glutReshapeWindow(width, height);
 	return Qnil;
 }
@@ -339,7 +339,7 @@ glut_SetCursor(obj,arg1)
 VALUE obj,arg1;
 {
 	int cursor;
-	cursor = NUM2INT(arg1);
+	cursor = (int)NUM2INT(arg1);
 	glutSetCursor(cursor);
 	return Qnil;
 }
@@ -349,8 +349,8 @@ glut_WarpPointer(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
 {
 	int x,y;
-	x = NUM2INT(arg1);
-	y = NUM2INT(arg2);
+	x = (int)NUM2INT(arg1);
+	y = (int)NUM2INT(arg2);
 	glutWarpPointer(x,y);
 	return Qnil;
 }
@@ -407,7 +407,7 @@ glut_DestroyMenu(obj,arg1)
 VALUE obj,arg1;
 {
 	int menu;
-	menu = NUM2INT(arg1);
+	menu = (int)NUM2INT(arg1);
 	glutDestroyMenu(menu);
 	//rb_hash_aset(g_menucallback, menu, Qnil);
 	//rb_hash_aset(g_menuargs, menu, Qnil);
@@ -429,7 +429,7 @@ static VALUE
 glut_SetMenu(obj,arg1)
 VALUE obj,arg1;
 {
-	glutSetMenu(NUM2INT(arg1));
+	glutSetMenu((int)NUM2INT(arg1));
 	return Qnil;
 }
 
@@ -439,7 +439,7 @@ glut_AddMenuEntry(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
 {
 	Check_Type(arg1,T_STRING);
-	glutAddMenuEntry(RSTRING_PTR(arg1), NUM2INT(arg2));
+	glutAddMenuEntry(RSTRING_PTR(arg1), (int)NUM2INT(arg2));
 	return Qnil;
 }
 
@@ -449,7 +449,7 @@ glut_AddSubMenu(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
 {
 	Check_Type(arg1,T_STRING);
-	glutAddSubMenu(RSTRING_PTR(arg1), NUM2INT(arg2));
+	glutAddSubMenu(RSTRING_PTR(arg1), (int)NUM2INT(arg2));
 	return Qnil;
 }
 
@@ -458,7 +458,7 @@ static VALUE glut_ChangeToMenuEntry(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
 {
 	Check_Type(arg2,T_STRING);
-	glutChangeToMenuEntry(NUM2INT(arg1), RSTRING_PTR(arg2), NUM2INT(arg3));
+	glutChangeToMenuEntry((int)NUM2INT(arg1), RSTRING_PTR(arg2), (int)NUM2INT(arg3));
 	return Qnil;
 }
 
@@ -467,14 +467,14 @@ static VALUE glut_ChangeToSubMenu(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
 {
 	Check_Type(arg2,T_STRING);
-	glutChangeToSubMenu(NUM2INT(arg1), RSTRING_PTR(arg2), NUM2INT(arg3));
+	glutChangeToSubMenu((int)NUM2INT(arg1), RSTRING_PTR(arg2), (int)NUM2INT(arg3));
 	return Qnil;
 }
 
 
 static VALUE glut_RemoveMenuItem( VALUE obj, VALUE arg1 )
 {
-	glutRemoveMenuItem(NUM2INT(arg1));
+	glutRemoveMenuItem((int)NUM2INT(arg1));
 	return Qnil;
 }
 
@@ -483,7 +483,7 @@ static VALUE
 glut_AttachMenu(obj,arg1)
 VALUE obj, arg1;
 {
-	glutAttachMenu(NUM2INT(arg1));
+	glutAttachMenu((int)NUM2INT(arg1));
 	return Qnil;
 }
 
@@ -492,7 +492,7 @@ static VALUE
 glut_DetachMenu(obj,arg1)
 VALUE obj, arg1;
 {
-	glutDetachMenu(NUM2INT(arg1));
+	glutDetachMenu((int)NUM2INT(arg1));
 	return Qnil;
 }
 
@@ -629,7 +629,7 @@ VALUE obj,arg1,arg2,arg3;
 	unsigned int millis;
 	int value;
 	millis = (unsigned int)NUM2INT(arg1);
-	value = NUM2INT(arg3);
+	value = (int)NUM2INT(arg3);
 	if (!rb_obj_is_kind_of(arg2,rb_cProc)) 
 		rb_raise(rb_eTypeError, "glutTimerFunc:%s", rb_class2name(CLASS_OF(arg2)));
 	timer_func = arg2;
@@ -767,7 +767,7 @@ int button, state, x, y;
 	VALUE func;
 	func = rb_ary_entry(TabletButtonFunc, glutGetWindow());
 	if (!NIL_P(func))
-		rb_funcall(func, 4, INT2NUM(button), INT2NUM(state), INT2NUM(x), INT2NUM(y));
+		rb_funcall(func, 4, (int)INT2NUM(button), INT2NUM(state), INT2NUM(x), INT2NUM(y));
 }
 
 
@@ -839,7 +839,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	GLfloat red;
 	GLfloat green;
 	GLfloat blue;
-	set = NUM2INT(arg1);
+	set = (int)NUM2INT(arg1);
 	red = (GLfloat)NUM2DBL(arg2);
 	green = (GLfloat)NUM2DBL(arg3);
 	blue = (GLfloat)NUM2DBL(arg4);
@@ -855,8 +855,8 @@ VALUE obj,arg1,arg2;
 	int ndx;
 	int component;
 	GLfloat ret;
-	ndx = NUM2INT(arg1);
-	component = NUM2INT(arg2);
+	ndx = (int)NUM2INT(arg1);
+	component = (int)NUM2INT(arg2);
 	ret = (GLfloat)glutGetColor(ndx, component);
 	return rb_float_new(ret);
 }
@@ -867,7 +867,7 @@ glut_CopyColormap(obj,arg1)
 VALUE obj,arg1;
 {
 	int win;
-	win = NUM2INT(arg1);
+	win = (int)NUM2INT(arg1);
 	glutCopyColormap(win);
 	return Qnil;
 }
@@ -971,8 +971,8 @@ VALUE obj,arg1,arg2;
 {
 	int character;
 	int font;
-	font = NUM2INT(arg1);
-	character = NUM2INT(arg2);
+	font = (int)NUM2INT(arg1);
+	character = (int)NUM2INT(arg2);
 	glutBitmapCharacter(bitmap_font_map(font),character);
 	return Qnil;
 }
@@ -984,8 +984,8 @@ VALUE obj,arg1,arg2;
 	int font;
 	int character;
 	int ret;
-	font = NUM2INT(arg1);
-	character = NUM2INT(arg2);
+	font = (int)NUM2INT(arg1);
+	character = (int)NUM2INT(arg2);
 	ret = glutBitmapWidth(bitmap_font_map(font), character);
 	return INT2NUM(ret);
 }
@@ -997,8 +997,8 @@ VALUE obj,arg1,arg2;
 {
 	int font;
 	int character;
-	font = NUM2INT(arg1);
-	character = NUM2INT(arg2);
+	font = (int)NUM2INT(arg1);
+	character = (int)NUM2INT(arg2);
 	glutStrokeCharacter(stroke_font_map(font), character);
 	return Qnil;
 }
@@ -1011,8 +1011,8 @@ VALUE obj,arg1,arg2;
 	int font;
 	int character;
 	int ret;
-	font = NUM2INT(arg1);
-	character = NUM2INT(arg2);
+	font = (int)NUM2INT(arg1);
+	character = (int)NUM2INT(arg2);
 	ret = glutStrokeWidth(stroke_font_map(font), character);
 	return INT2NUM(ret);
 }
@@ -1025,7 +1025,7 @@ VALUE obj,arg1,arg2;
 	int font;
 	int ret;
 	Check_Type(arg2,T_STRING);
-	font = NUM2INT(arg1);
+	font = (int)NUM2INT(arg1);
 	ret = glutBitmapLength(bitmap_font_map(font), (const unsigned char*)RSTRING_PTR(arg2));
 	return INT2NUM(ret);
 }
@@ -1038,7 +1038,7 @@ VALUE obj,arg1,arg2;
 	int font;
 	int ret;
 	Check_Type(arg2,T_STRING);
-	font = NUM2INT(arg1);
+	font = (int)NUM2INT(arg1);
 	ret = glutStrokeLength(stroke_font_map(font), (const unsigned char*)RSTRING_PTR(arg2));
 	return INT2NUM(ret);
 }
@@ -1218,10 +1218,10 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	int y;
 	int width;
 	int height;
-	x = NUM2INT(arg1);
-	y = NUM2INT(arg2);
-	width = NUM2INT(arg3);
-	height = NUM2INT(arg4);
+	x = (int)NUM2INT(arg1);
+	y = (int)NUM2INT(arg2);
+	width = (int)NUM2INT(arg3);
+	height = (int)NUM2INT(arg4);
 	glutVideoResize(x,y, width, height);
 	return Qnil;
 }
@@ -1234,10 +1234,10 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	int y;
 	int width;
 	int height;
-	x = NUM2INT(arg1);
-	y = NUM2INT(arg2);
-	width = NUM2INT(arg3);
-	height = NUM2INT(arg4);
+	x = (int)NUM2INT(arg1);
+	y = (int)NUM2INT(arg2);
+	width = (int)NUM2INT(arg3);
+	height = (int)NUM2INT(arg4);
 	glutVideoPan(x,y, width, height);
 	return Qnil;
 }

@@ -102,8 +102,8 @@ VALUE obj,arg1,arg2,arg3;
 	GLsizei *ary2;
   int len1,len2;
 	LOAD_GL_FUNC(glMultiDrawArrays,"1.4")
-  len1 = RARRAY_LEN(arg2);
-  len2 = RARRAY_LEN(arg3);
+  len1 = (int)RARRAY_LEN(arg2);
+  len2 = (int)RARRAY_LEN(arg3);
 	if (len1!=len2)
 			rb_raise(rb_eArgError, "Passed arrays must have same length");
 	mode = (GLenum)NUM2INT(arg1);
@@ -142,14 +142,14 @@ VALUE obj;
 			type = (GLenum)NUM2INT(args[1]);
 			Check_Type(args[2],T_ARRAY);
 			ary = args[2];
-			size = RARRAY_LEN(ary);
+			size = (GLint)RARRAY_LEN(ary);
 			counts = ALLOC_N(GLsizei,size);
 			indices = ALLOC_N(GLvoid*,size);
 			for (i=0;i<size;i++) {
 				VALUE data;
 				data = pack_array_or_pass_string(type,RARRAY_PTR(ary)[i]);
 				indices[i] = RSTRING_PTR(data);
-				counts[i] = RSTRING_LEN(data);
+				counts[i] = (GLsizei)RSTRING_LEN(data);
 			}
 			fptr_glMultiDrawElements(mode,counts,type,indices,size);
 			xfree(counts);
@@ -165,12 +165,12 @@ VALUE obj;
 			if (RARRAY_LEN(args[2]) != RARRAY_LEN(args[3]))
 				rb_raise(rb_eArgError, "Count and indices offset array must have same length");
 
-			size = RARRAY_LEN(args[2]);
+			size = (GLint)RARRAY_LEN(args[2]);
 
 			counts = ALLOC_N(GLsizei,size);
 			indices = ALLOC_N(GLvoid*,size);
 			for (i=0;i<size;i++) {
-				counts[i] = NUM2INT(rb_ary_entry(args[2],i));
+				counts[i] = (GLsizei)NUM2INT(rb_ary_entry(args[2],i));
 				indices[i] = (GLvoid *) NUM2INT(rb_ary_entry(args[3],i));
 			}
 			fptr_glMultiDrawElements(mode,counts,type,indices,size);

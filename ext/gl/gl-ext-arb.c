@@ -52,7 +52,7 @@ static VALUE gl_PointParameterfvARB(VALUE obj,VALUE arg1,VALUE arg2)
 	GLenum pname;
 	GLint size;
 	LOAD_GL_FUNC(glPointParameterfvARB,"GL_ARB_point_parameters")
-	pname = NUM2UINT(arg1);
+	pname = (GLenum)NUM2UINT(arg1);
 	Check_Type(arg2,T_ARRAY);
 	if (pname==GL_POINT_DISTANCE_ATTENUATION)
 		size = 3;
@@ -106,7 +106,7 @@ static VALUE gl_ProgramStringARB(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3)
 {
 	LOAD_GL_FUNC(glProgramStringARB,"GL_ARB_vertex_program")
 	Check_Type(arg3,T_STRING);
-	fptr_glProgramStringARB(NUM2INT(arg1),NUM2INT(arg2),RSTRING_LEN(arg3),RSTRING_PTR(arg3));
+	fptr_glProgramStringARB((GLenum)NUM2INT(arg1),(GLenum)NUM2INT(arg2),(GLsizei)RSTRING_LEN(arg3),RSTRING_PTR(arg3));
 	CHECK_GLERROR
 	return Qnil;
 }
@@ -116,9 +116,9 @@ static VALUE gl_GetProgramivARB(VALUE obj,VALUE arg1,VALUE arg2)
 {
 	GLint ret = 0;
 	LOAD_GL_FUNC(glGetProgramivARB,"GL_ARB_vertex_program")
-	fptr_glGetProgramivARB(NUM2INT(arg1),NUM2INT(arg2),&ret);
+	fptr_glGetProgramivARB((GLenum)NUM2INT(arg1),(GLenum)NUM2INT(arg2),&ret);
 	CHECK_GLERROR
-	return cond_GLBOOL2RUBY(NUM2INT(arg2),ret);
+	return cond_GLBOOL2RUBY((GLenum)NUM2INT(arg2),ret);
 }
 
 static void (APIENTRY * fptr_glGetProgramStringARB)(GLenum,GLenum,void *string);
@@ -131,14 +131,14 @@ static VALUE gl_GetProgramStringARB(VALUE obj,VALUE arg1,VALUE arg2)
 	LOAD_GL_FUNC(glGetProgramStringARB,"GL_ARB_vertex_program")
 	LOAD_GL_FUNC(glGetProgramivARB,"GL_ARB_vertex_program")
 
-	fptr_glGetProgramivARB(NUM2INT(arg1),GL_PROGRAM_LENGTH_ARB,&len);
+	fptr_glGetProgramivARB((GLenum)NUM2INT(arg1),GL_PROGRAM_LENGTH_ARB,&len);
 	CHECK_GLERROR
 	if (len<=0)
 		return rb_str_new2("");
 	
 	buffer = ALLOC_N(GLchar,len+1);
 	memset(buffer,0,sizeof(GLchar) * (len+1));
-		fptr_glGetProgramStringARB(NUM2INT(arg1),NUM2INT(arg2),buffer);
+		fptr_glGetProgramStringARB((GLenum)NUM2INT(arg1),(GLenum)NUM2INT(arg2),buffer);
 	ret_buffer = rb_str_new2(buffer);
 	xfree(buffer);
 
@@ -218,7 +218,7 @@ VALUE obj,arg1,arg2,arg3; \
 	_type_ cary[4]; \
 	LOAD_GL_FUNC(gl##_name_,_extension_) \
 	_conv_(arg3,cary,4); \
-	fptr_gl##_name_(NUM2UINT(arg1),NUM2UINT(arg2),cary); \
+	fptr_gl##_name_((GLenum)NUM2UINT(arg1),(GLuint)NUM2UINT(arg2),cary); \
 	CHECK_GLERROR \
 	return Qnil; \
 }
@@ -237,7 +237,7 @@ VALUE obj,arg1,arg2; \
 { \
 	_type_ cary[4] = {0.0,0.0,0.0,0.0}; \
 	LOAD_GL_FUNC(gl##_name_,_extension_) \
-	fptr_gl##_name_(NUM2UINT(arg1),NUM2UINT(arg2),cary); \
+	fptr_gl##_name_((GLenum)NUM2UINT(arg1),(GLuint)NUM2UINT(arg2),cary); \
 	RET_ARRAY_OR_SINGLE(4,RETCONV_##_type_,cary) \
 }
 
@@ -363,9 +363,9 @@ static VALUE gl_##_name_(VALUE obj,VALUE arg1,VALUE arg2) \
 { \
 	_type_ ret = 0; \
 	LOAD_GL_FUNC(gl##_name_,"GL_ARB_occlusion_query") \
-	fptr_gl##_name_(NUM2INT(arg1),NUM2INT(arg2),&ret); \
+	fptr_gl##_name_((GLuint)NUM2INT(arg1),(GLenum)NUM2INT(arg2),&ret); \
 	CHECK_GLERROR \
-	return _conv_(NUM2INT(arg2),ret); \
+	return _conv_((GLenum)NUM2INT(arg2),ret); \
 }
 
 GETQUERY_FUNC(GetQueryivARB,GLint,cond_GLBOOL2RUBY)
@@ -397,7 +397,7 @@ VALUE obj,arg1,arg2;
 	shader = (GLuint)NUM2UINT(arg1);
 	Check_Type(arg2,T_STRING);
 	str = RSTRING_PTR(arg2);
-	length = RSTRING_LEN(arg2);
+	length = (GLint)RSTRING_LEN(arg2);
 	fptr_glShaderSourceARB(shader,1,&str,&length);
 	CHECK_GLERROR
 	return Qnil;
@@ -423,7 +423,7 @@ VALUE obj,arg1,arg2; \
 	_type_ *value; \
 	LOAD_GL_FUNC(gl##_name_,"GL_ARB_shader_objects") \
 	Check_Type(arg2,T_ARRAY); \
-	count = RARRAY_LEN(arg2); \
+	count = (GLsizei)RARRAY_LEN(arg2); \
 	if (count<=0 || (count % _size_) != 0) \
 		rb_raise(rb_eArgError, "Parameter array size must be multiplication of %i",_size_); \
 	location = (GLint)NUM2INT(arg1); \
@@ -457,7 +457,7 @@ VALUE obj,arg1,arg2,arg3; \
 	GLfloat *value;	\
 	LOAD_GL_FUNC(gl##_name_,"GL_ARB_shader_objects") \
 	location = (GLint)NUM2INT(arg1); \
-	count = RARRAY_LEN(rb_funcall(rb_Array(arg3),rb_intern("flatten"),0)); \
+	count = (GLsizei)RARRAY_LEN(rb_funcall(rb_Array(arg3),rb_intern("flatten"),0)); \
 	transpose = (GLboolean)NUM2INT(arg2); \
 	value = ALLOC_N(GLfloat, count); \
 	ary2cmatfloatcount(arg3,value,_size_,_size_); \

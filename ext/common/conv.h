@@ -125,7 +125,7 @@ cond_GLBOOL2RUBY_FUNC(cond_GLBOOL2RUBY_D,GLdouble,rb_float_new)
 static inline int ary2c##_type_( arg, cary, maxlen ) \
 VALUE arg; \
 GL##_type_ cary[]; \
-int maxlen; \
+long maxlen; \
 { \
     int i; \
     VALUE ary = rb_Array(arg); \
