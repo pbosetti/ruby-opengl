@@ -60,7 +60,7 @@ task :test_all => [:test]
 # common specification for source and binary gems
 spec = Gem::Specification.new do |s|
     s.name              = "ruby-opengl2"
-    s.version           = "0.60.3"
+    s.version           = "0.60.4"
     s.authors           = [ "Alain Hoang", "Jan Dvorak", "Minh Thu Vo", "James Adam", "Paolo Bosetti" ]
     s.homepage          = "http://github.com/pbosetti/ruby-opengl"
     s.email             = "p4010@me.com"
