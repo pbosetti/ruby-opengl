@@ -155,7 +155,7 @@ ARY2CTYPE(double,NUM2DBL)
 
 /* Converts either array or object responding to #to_a to C-style array */
 #define ARY2CMAT(_type_) \
-static inline void ary2cmat##_type_(rary, cary, cols, rows, count) \
+static inline void ary2cmat##_type_(rary, cary, cols, rows) \
 VALUE rary; \
 _type_ cary[]; \
 int cols,rows; \
