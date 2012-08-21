@@ -60,7 +60,7 @@ task :test_all => [:test]
 # common specification for source and binary gems
 spec = Gem::Specification.new do |s|
     s.name              = "ruby-opengl2"
-    s.version           = "0.60.4"
+    s.version           = "0.60.5"
     s.authors           = [ "Alain Hoang", "Jan Dvorak", "Minh Thu Vo", "James Adam", "Paolo Bosetti" ]
     s.homepage          = "http://github.com/pbosetti/ruby-opengl"
     s.email             = "p4010@me.com"
@@ -70,7 +70,7 @@ spec = Gem::Specification.new do |s|
     s.description       = "This is a modernization of the glorious but unmaintained ruby-opengl version, aimed at making it compatible with ruby 1.9.x series. At the moment, it successfully compiles on OS X Lion and Debian 6.0.3"
     s.require_path      = "lib"
     s.has_rdoc          = false
-    s.files             = FileList["{lib,ext,examples,test}/**/*"] do |fl|
+    s.files             = FileList.new("{lib,ext,examples,test}/**/*") do |fl|
                             fl.exclude(/Rakefile/)
                           end
     s.extensions        = ['Rakefile']
