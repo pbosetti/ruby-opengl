@@ -70,7 +70,9 @@ spec = Gem::Specification.new do |s|
     s.description       = "This is a modernization of the glorious but unmaintained ruby-opengl version, aimed at making it compatible with ruby 1.9.x series. At the moment, it successfully compiles on OS X Lion and Debian 6.0.3"
     s.require_path      = "lib"
     s.has_rdoc          = false
-    s.files             = FileList["{lib,ext,examples,test}/**/*"]
+    s.files             = FileList["{lib,ext,examples,test}/**/*"] do |fl|
+                            fl.exclude(/Rakefile/)
+                          end
     s.extensions        = ['Rakefile']
     
     if s.respond_to? :specification_version then
