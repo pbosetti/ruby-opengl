@@ -361,7 +361,9 @@ VALUE obj,arg1,arg2; \
 
 GETVERTEXATTRIB_FUNC(GetVertexAttribdv,GLdouble)
 GETVERTEXATTRIB_FUNC(GetVertexAttribfv,GLfloat)
-//GETVERTEXATTRIB_FUNC(GetVertexAttribiv,GLint,cond_GLBOOL2RUBY)
+#if 0
+GETVERTEXATTRIB_FUNC(GetVertexAttribiv,GLint,cond_GLBOOL2RUBY)
+#endif
 #undef GETVERTEXATTRIB_FUNC
 
 static void (APIENTRY * fptr_glGetVertexAttribiv)(GLuint,GLenum,GLint *);

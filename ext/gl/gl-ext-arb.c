@@ -326,7 +326,9 @@ VALUE obj,arg1,arg2; \
 
 GETVERTEXATTRIB_FUNC(GetVertexAttribdvARB,GLdouble,"GL_ARB_vertex_program")
 GETVERTEXATTRIB_FUNC(GetVertexAttribfvARB,GLfloat,"GL_ARB_vertex_program")
-//GETVERTEXATTRIB_FUNC(GetVertexAttribivARB,GLint,INT2NUM,"GL_ARB_vertex_program")
+#if 0
+GETVERTEXATTRIB_FUNC(GetVertexAttribivARB,GLint,INT2NUM,"GL_ARB_vertex_program")
+#endif
 #undef GETVERTEXATTRIB_FUNC
 
 static void (APIENTRY * fptr_glGetVertexAttribivARB)(GLuint,GLenum,GLint *);
