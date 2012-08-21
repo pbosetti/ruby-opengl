@@ -521,9 +521,7 @@ int width, height;
 
 
 static void GLUTCALLBACK
-glut_KeyboardFuncCallback(key, x, y)
-unsigned char key;
-int x,y;
+glut_KeyboardFuncCallback(unsigned char key, int x, int y)
 {
 	VALUE func;
 	func = rb_ary_entry(KeyboardFunc, glutGetWindow());
@@ -806,9 +804,7 @@ int x,y,z;
 }
 
 static void GLUTCALLBACK
-glut_KeyboardUpFuncCallback(key,x,y)
-unsigned char key;
-int x,y;
+glut_KeyboardUpFuncCallback(unsigned char key, int x, int y)
 {
 	VALUE func;
 	func = rb_ary_entry(KeyboardUpFunc, glutGetWindow());

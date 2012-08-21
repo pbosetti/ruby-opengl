@@ -31,7 +31,12 @@ file for the terms of the license.
 [Yoshi's ruby-opengl]: http://www2.giganet.net/~yoshi/
 
 
-Current release: 0.60.1 (February 16, 2009)
+To Do
+-----
+`rake test` still gives some errors. They have to be taken care of.
+
+
+Current release: 0.60.5 (February 16, 2009)
 -----------------
 This is maintenance release.
 

@@ -27,6 +27,7 @@
 #include <ctype.h>
 
 #ifdef __APPLE__
+#include <dlfcn.h>
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 #include <GLUT/glut.h>
@@ -357,27 +358,14 @@ static inline void *load_gl_function(const char *name,int raise)
 	void *func_ptr = NULL;
 
 #if defined(__APPLE__)
-	static const struct mach_header* library = NULL;
-	char* symbolName;
-	NSSymbol symbol;
-	if (library == NULL)
-		library = NSAddImage("/System/Library/Frameworks/OpenGL.framework/Versions/Current/OpenGL",NSADDIMAGE_OPTION_RETURN_ON_ERROR);
-
-	if (library == NULL)
-		rb_raise(rb_eRuntimeError,"Can't load OpenGL library for dynamic loading");
-		
+	void* theImage = dlopen("/System/Library/Frameworks/OpenGL.framework/Versions/Current/OpenGL", RTLD_LAZY);
 	/*  prepend a '_' for the Unix C symbol mangling convention  */
+	char * symbolName;
 	symbolName = ALLOC_N(char,strlen(name) + 2);
 	symbolName[0] = '_';
 	strcpy(symbolName+1, name);
-
-	symbol = NSLookupSymbolInImage(library,symbolName,NSLOOKUPSYMBOLINIMAGE_OPTION_BIND | NSLOOKUPSYMBOLINIMAGE_OPTION_RETURN_ON_ERROR);
+	func_ptr = dlsym(theImage, &(symbolName[1]));
 	xfree(symbolName);
-
-	if (symbol == NULL)
-		func_ptr = NULL;
-	else
-		func_ptr = NSAddressOfSymbol(symbol);
 #elif defined(WIN32) || defined(_WIN32)
 	func_ptr = wglGetProcAddress((LPCSTR)name);
 #elif defined(GLX_VERSION_1_4)

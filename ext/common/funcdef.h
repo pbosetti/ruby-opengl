@@ -222,10 +222,9 @@ static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
 #define GL_FUNC_GENOBJECTS(_name_) \
 static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
 { \
-	GLsizei n; \
+	GLsizei i, n; \
 	GLuint *objects; \
 	VALUE ret; \
-	unsigned int i; \
 	n = CONV_GLsizei(arg1); \
 	objects = ALLOC_N(GLuint, n); \
 	gl##_name_(n,objects); \
