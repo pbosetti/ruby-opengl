@@ -409,8 +409,10 @@ VALUE obj,arg1;
 	int menu;
 	menu = (int)NUM2INT(arg1);
 	glutDestroyMenu(menu);
-	//rb_hash_aset(g_menucallback, menu, Qnil);
-	//rb_hash_aset(g_menuargs, menu, Qnil);
+#if 0
+	rb_hash_aset(g_menucallback, menu, Qnil);
+	rb_hash_aset(g_menuargs, menu, Qnil);
+#endif
 	return Qnil;
 }
 
