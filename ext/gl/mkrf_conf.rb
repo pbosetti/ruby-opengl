@@ -22,7 +22,7 @@ RUBYVER = " -DRUBY_VERSION=" + RUBY_VERSION.split(".").join
 Mkrf::Generator.new( 'gl' ) do |g|
   puts "*" * 10
   #Config::CONFIG["CC"] = `which gcc`.chomp
-  p RbConfig::CONFIG
+  #p RbConfig::CONFIG
   puts "*" * 10
 	case RUBY_PLATFORM
 	when /darwin/
